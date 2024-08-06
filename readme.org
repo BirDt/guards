@@ -1,0 +1,34 @@
+* guards
+
+=guards= is a small syntax library for Chicken Scheme which adds "guarded" function definitions.
+
+You can think of a guarded function definition as similar to a function definition with type hints, but with extra flexibility in what the "hints" can specify. More to the point, a guarded function allows you to specify a "domain" for the function and it's parameters, and assertions are automatically generated to ensure the parameter and function output are always within the domain specified.
+
+As a trivial example (more can be found in =test.scm=), let's say we want to define a function =foo= which takes two parameters =x= (a positive, even number) and =y= (any number between 10 and 1), and returns the =product= of those two numbers, and we absolutely never want the output to be 0 (which should never happen given that neither =x= nor =y= can be 0, but let's make extra certain). We can write this as a guarded function definition in a form very familiar to Scheme:
+
+#+begin_src scheme
+  (import guards)
+  
+  (define-guarded ((foo (!= 0))
+		   (x (even?) (> 0))
+		   (y (>= 1) (<= 10)))
+    (* x y))
+#+end_src
+
+The =define-guarded= macro will then insert assertions around =foo= to generate the following definition:
+
+#+begin_src scheme
+  (define (foo x y)
+    (assert (and (even? x) (> x 0)))
+    (assert (and (>= y 1) (<= y 10)))
+    (let ((result (begin
+		    (* x y))))
+      (assert (and (!= result 0)))
+      result))
+#+end_src
+
+Essentially, this provides a (subjectively) smoother syntax for generating your own safe-guard assertions.
+
+** Wishlist
+
+Better error messages would be good, also a similar form for =(lambda)=. Introspection here would be nice as well but I'm not sure how likely that is to be possible (for eg, if a function calls another function with values which could be out of the sub-procedure's domain, it should fail at compilation).

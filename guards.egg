@@ -1,0 +1,6 @@
+((author "Jakub Nowak")
+ (version "0.1.0")
+ (synopsis "Macros for defining functions and lambdas with parameter guards")
+ (license "AGPLv3")
+ (components (extension guards
+ 	      (files "guards.scm"))))
