@@ -1,0 +1,3 @@
+(repo git "git://github.com/BirDt/{egg-name}.git")
+(uri targz "https://github.com/BirDt/{egg-name}/tarball/{egg-release}")
+(release "0.1.0")
